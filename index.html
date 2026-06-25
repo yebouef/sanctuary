@@ -201,6 +201,25 @@ body::before{content:'';position:fixed;inset:0;background-image:
 .rc-restart{margin-top:20px;padding:14px 32px;background:var(--gold-dim);border:1px solid var(--gold);border-radius:50px;color:var(--gold-light);font-family:'Cinzel',serif;font-size:12px;letter-spacing:2px;cursor:pointer;}
 .sub-view{display:none;}
 .sub-view.active{display:block;}
+/* Examination */
+.exam-card{background:var(--panel-grad);border:1px solid var(--gold);border-radius:14px;padding:18px 16px;margin-bottom:24px;cursor:pointer;display:flex;align-items:center;gap:14px;transition:transform .25s var(--ease),box-shadow .25s;position:relative;overflow:hidden;}
+.exam-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at left center,var(--candle),transparent 70%);pointer-events:none;}
+.exam-card:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(0,0,0,.4),0 0 20px var(--candle);}
+.exam-card-icon{font-size:30px;flex-shrink:0;}
+.exam-card-body .exam-card-name{font-family:'Cinzel',serif;font-size:15px;color:var(--gold-light);}
+.exam-card-body .exam-card-desc{font-size:13px;color:var(--text-dim);font-style:italic;margin-top:2px;}
+.exam-card-arrow{color:var(--gold);font-size:18px;margin-left:auto;}
+.exam-block{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px;}
+.exam-prayer-text{font-size:17px;line-height:1.85;color:var(--sacred);font-style:italic;}
+.exam-cmd-num{font-family:'Cinzel',serif;font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);text-align:center;}
+.exam-cmd-title{font-family:'EB Garamond',serif;font-size:19px;color:var(--gold-light);text-align:center;margin:6px 0 18px;line-height:1.4;}
+.exam-prompt{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border);font-size:15px;line-height:1.6;color:var(--text);}
+.exam-prompt:last-of-type{border-bottom:none;}
+.exam-prompt .ep-dot{color:var(--gold);flex-shrink:0;}
+.exam-note{width:100%;background:var(--deep);border:1px solid var(--border);border-radius:10px;padding:12px;color:var(--text);font-family:'EB Garamond',serif;font-size:15px;resize:none;outline:none;margin-top:14px;transition:border-color .2s;}
+.exam-note:focus{border-color:var(--gold);}
+.exam-note::placeholder{color:var(--text-dim);font-style:italic;}
+.exam-privacy{font-size:12px;color:var(--text-dim);font-style:italic;text-align:center;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:6px;}
 /* Today dashboard */
 .dash{background:var(--deep);border:1px solid var(--border2);border-radius:14px;padding:18px;margin-bottom:24px;}
 .dash-title{font-family:'Cinzel',serif;font-size:14px;color:var(--gold-light);letter-spacing:1px;margin-bottom:14px;text-align:center;}
@@ -251,10 +270,23 @@ body::before{content:'';position:fixed;inset:0;background-image:
       <textarea class="guide-textarea" id="guide-input" rows="4"></textarea>
       <button class="guide-cta" onclick="seekGuidance()" data-t="guide_cta"></button>
     </div>
+    <div class="exam-card" onclick="openExam()">
+      <div class="exam-card-icon">🕯️</div>
+      <div class="exam-card-body">
+        <div class="exam-card-name" data-t="exam_card_title"></div>
+        <div class="exam-card-desc" data-t="exam_card_sub"></div>
+      </div>
+      <div class="exam-card-arrow">→</div>
+    </div>
   </div>
   <div class="sub-view" id="guide-reco-view">
     <button class="back-btn" onclick="showGuideHome()">← <span data-t="back"></span></button>
     <div id="guide-reco-inner"></div>
+  </div>
+  <div class="sub-view" id="guide-exam-view">
+    <button class="back-btn" onclick="showGuideHome()">← <span data-t="back"></span></button>
+    <div class="page-header" style="padding-top:8px;"><div class="emblem">🕯️</div><h1 data-t="exam_title"></h1><div class="gold-line"></div></div>
+    <div id="exam-inner"></div>
   </div>
 </div>
 
@@ -444,7 +476,25 @@ const UI = {
   streak_encourage:{en:"Keep the flame burning — pray today to continue your streak.",fr:"Gardez la flamme allumée — priez aujourd'hui pour continuer votre série."},
   streak_start:{en:"Begin your journey today. Every prayer counts.",fr:"Commencez votre parcours aujourd'hui. Chaque prière compte."},
   streak_strong:{en:"Beautiful faithfulness. God sees your devotion.",fr:"Belle fidélité. Dieu voit votre dévotion."},
-  history_note:{en:"A day counts when you complete any prayer — a psalm, rosary, or family prayer.",fr:"Un jour compte lorsque vous complétez une prière — un psaume, un chapelet ou une prière en famille."}
+  history_note:{en:"A day counts when you complete any prayer — a psalm, rosary, or family prayer.",fr:"Un jour compte lorsque vous complétez une prière — un psaume, un chapelet ou une prière en famille."},
+  exam_card_title:{en:"Examine your conscience",fr:"Examiner votre conscience"},
+  exam_card_sub:{en:"Prepare your heart for confession",fr:"Préparez votre cœur à la confession"},
+  exam_title:{en:"EXAMINATION OF CONSCIENCE",fr:"EXAMEN DE CONSCIENCE"},
+  exam_intro_label:{en:"Before you begin",fr:"Avant de commencer"},
+  exam_intro:{en:"This is a time of honest, prayerful reflection to prepare for the Sacrament of Reconciliation. Whatever you note here stays only on your device — it is never saved or sent anywhere. Take your time, and be gentle with yourself.",fr:"C'est un temps de réflexion honnête et priante pour préparer le Sacrement de la Réconciliation. Tout ce que vous notez ici reste uniquement sur votre appareil — rien n'est enregistré ni envoyé. Prenez votre temps, et soyez doux avec vous-même."},
+  exam_begin:{en:"Begin in Prayer ✦",fr:"Commencer dans la Prière ✦"},
+  exam_opening_label:{en:"Opening Prayer",fr:"Prière d'ouverture"},
+  exam_reflect:{en:"Reflect",fr:"Réfléchir"},
+  exam_commandment:{en:"Commandment",fr:"Commandement"},
+  exam_your_notes:{en:"Privately note what stirs in your heart (optional, stays on this device)…",fr:"Notez en privé ce qui touche votre cœur (facultatif, reste sur cet appareil)…"},
+  exam_contrition_label:{en:"Act of Contrition",fr:"Acte de Contrition"},
+  exam_contrition_intro:{en:"Pray these words of sorrow from your heart:",fr:"Priez ces paroles de regret du fond du cœur :"},
+  exam_penance_label:{en:"A Prayer of Repentance",fr:"Une Prière de Repentir"},
+  exam_penance_intro:{en:"Psalm 51 is the great psalm of repentance — pray it slowly.",fr:"Le Psaume 51 est le grand psaume du repentir — priez-le lentement."},
+  exam_next_step:{en:"The Next Step",fr:"La Prochaine Étape"},
+  exam_finish:{en:"Finish ✦",fr:"Terminer ✦"},
+  exam_done:{en:"Your heart is prepared 🕊️",fr:"Votre cœur est préparé 🕊️"},
+  exam_clear_note:{en:"Nothing you wrote was saved. Go in peace.",fr:"Rien de ce que vous avez écrit n'a été conservé. Allez en paix."}
 };
 
 function t(key){ return (UI[key] && UI[key][LANG]) || (UI[key] && UI[key].en) || key; }
@@ -766,6 +816,57 @@ const FAMILY = [
     {role:'together',line:{en:"Amen.",fr:"Amen."}}
    ]}
 ];
+// ═══════════ EXAMINATION OF CONSCIENCE (faithful, offline, private) ═══════════
+// This PREPARES a person for the Sacrament of Reconciliation. It never claims to
+// absolve sins — absolution comes through a priest. Nothing entered leaves the device.
+const EXAM_OPENING = {
+  en:"Come, Holy Spirit. Enlighten my heart and help me to see myself honestly — not to despair, but to return to the God who loves me. Give me courage to be truthful, and trust in His mercy.",
+  fr:"Viens, Esprit Saint. Éclaire mon cœur et aide-moi à me voir avec honnêteté — non pour désespérer, mais pour revenir vers le Dieu qui m'aime. Donne-moi le courage de la vérité, et la confiance en Sa miséricorde."
+};
+const EXAM_COMMANDMENTS = [
+  {n:1,title:{en:"I am the Lord your God; you shall have no other gods before me.",fr:"Je suis le Seigneur ton Dieu ; tu n'auras pas d'autres dieux devant moi."},
+   prompts:{en:["Have I put other things — money, success, comfort, people's opinion — before God?","Have I neglected prayer or my relationship with God?","Have I trusted in superstition, or turned away from my faith?"],
+            fr:["Ai-je placé d'autres choses — l'argent, le succès, le confort, l'opinion des autres — avant Dieu ?","Ai-je négligé la prière ou ma relation avec Dieu ?","Ai-je fait confiance à la superstition, ou me suis-je détourné de ma foi ?"]}},
+  {n:2,title:{en:"You shall not take the name of the Lord your God in vain.",fr:"Tu ne prononceras pas le nom du Seigneur ton Dieu en vain."},
+   prompts:{en:["Have I used God's name carelessly, in anger, or as a curse?","Have I spoken of holy things with disrespect?"],
+            fr:["Ai-je utilisé le nom de Dieu à la légère, dans la colère, ou comme un juron ?","Ai-je parlé des choses saintes avec irrespect ?"]}},
+  {n:3,title:{en:"Remember to keep holy the Lord's Day.",fr:"Souviens-toi de sanctifier le jour du Seigneur."},
+   prompts:{en:["Have I missed Mass through my own fault?","Have I kept Sunday as a day of rest, prayer, and family?"],
+            fr:["Ai-je manqué la messe par ma propre faute ?","Ai-je gardé le dimanche comme un jour de repos, de prière et de famille ?"]}},
+  {n:4,title:{en:"Honor your father and your mother.",fr:"Honore ton père et ta mère."},
+   prompts:{en:["Have I been disrespectful, impatient, or unkind to my parents or elders?","Have I cared for my family's needs?","As a parent, have I been patient and loving with my children?"],
+            fr:["Ai-je été irrespectueux, impatient, ou dur envers mes parents ou les aînés ?","Ai-je pris soin des besoins de ma famille ?","Comme parent, ai-je été patient et aimant avec mes enfants ?"]}},
+  {n:5,title:{en:"You shall not kill.",fr:"Tu ne tueras pas."},
+   prompts:{en:["Have I harbored anger, hatred, or a desire for revenge?","Have I hurt others by my words or actions?","Have I harmed my own health, or failed to forgive?"],
+            fr:["Ai-je nourri la colère, la haine, ou un désir de vengeance ?","Ai-je blessé les autres par mes paroles ou mes actes ?","Ai-je nui à ma propre santé, ou refusé de pardonner ?"]}},
+  {n:6,title:{en:"You shall not commit adultery.",fr:"Tu ne commettras pas d'adultère."},
+   prompts:{en:["Have I been faithful in my marriage or relationships, in body and thought?","Have I treated others as persons to love, not objects to use?","Have I guarded my heart and my eyes?"],
+            fr:["Ai-je été fidèle dans mon mariage ou mes relations, de corps et de pensée ?","Ai-je traité les autres comme des personnes à aimer, non des objets à utiliser ?","Ai-je gardé mon cœur et mes yeux ?"]}},
+  {n:7,title:{en:"You shall not steal.",fr:"Tu ne voleras pas."},
+   prompts:{en:["Have I taken what is not mine, or been dishonest in money or work?","Have I been generous to those in need?","Have I been fair and honest in business?"],
+            fr:["Ai-je pris ce qui ne m'appartient pas, ou été malhonnête en argent ou au travail ?","Ai-je été généreux envers ceux dans le besoin ?","Ai-je été juste et honnête dans mes affaires ?"]}},
+  {n:8,title:{en:"You shall not bear false witness against your neighbor.",fr:"Tu ne porteras pas de faux témoignage contre ton prochain."},
+   prompts:{en:["Have I lied, gossiped, or damaged someone's reputation?","Have I judged others harshly?","Have I kept my promises and spoken the truth in love?"],
+            fr:["Ai-je menti, médit, ou nui à la réputation de quelqu'un ?","Ai-je jugé les autres durement ?","Ai-je tenu mes promesses et dit la vérité avec amour ?"]}},
+  {n:9,title:{en:"You shall not covet your neighbor's wife.",fr:"Tu ne convoiteras pas la femme de ton prochain."},
+   prompts:{en:["Have I entertained impure thoughts or desires for another?","Have I cherished purity of heart?"],
+            fr:["Ai-je entretenu des pensées ou des désirs impurs envers un autre ?","Ai-je chéri la pureté du cœur ?"]}},
+  {n:10,title:{en:"You shall not covet your neighbor's goods.",fr:"Tu ne convoiteras pas les biens de ton prochain."},
+   prompts:{en:["Have I been envious or jealous of what others have?","Have I been grateful for what God has given me?","Have I been greedy or discontent?"],
+            fr:["Ai-je été envieux ou jaloux de ce que les autres possèdent ?","Ai-je été reconnaissant pour ce que Dieu m'a donné ?","Ai-je été avide ou insatisfait ?"]}}
+];
+const ACT_OF_CONTRITION = {
+  en:"O my God, I am heartily sorry for having offended You, and I detest all my sins because of Your just punishments, but most of all because they offend You, my God, who are all good and deserving of all my love. I firmly resolve, with the help of Your grace, to sin no more and to avoid the near occasions of sin. Amen.",
+  fr:"Mon Dieu, j'ai un très grand regret de Vous avoir offensé, parce que Vous êtes infiniment bon, infiniment aimable, et que le péché Vous déplaît. Je prends la ferme résolution, avec le secours de Votre sainte grâce, de ne plus Vous offenser et de faire pénitence. Amen."
+};
+const EXAM_ENCOURAGEMENT = {
+  en:"This examination has prepared your heart — but it is the beginning, not the end. The peace of God's forgiveness is given through the Sacrament of Reconciliation, where a priest, acting in the person of Christ, offers you absolution. Do not carry these burdens alone: go to confession, where Christ Himself is waiting to forgive you. Until then, pray with trust — His mercy is greater than any sin.",
+  fr:"Cet examen a préparé votre cœur — mais c'est un commencement, non une fin. La paix du pardon de Dieu est donnée par le Sacrement de la Réconciliation, où un prêtre, agissant en la personne du Christ, vous offre l'absolution. Ne portez pas ces fardeaux seul : allez vous confesser, là où le Christ Lui-même attend de vous pardonner. En attendant, priez avec confiance — Sa miséricorde est plus grande que tout péché."
+};
+const PSALM_51 = {
+  en:"Have mercy upon me, O God, according to thy lovingkindness: according unto the multitude of thy tender mercies blot out my transgressions. Wash me throughly from mine iniquity, and cleanse me from my sin. For I acknowledge my transgressions: and my sin is ever before me. Create in me a clean heart, O God; and renew a right spirit within me. Cast me not away from thy presence; and take not thy holy spirit from me. Restore unto me the joy of thy salvation; and uphold me with thy free spirit. The sacrifices of God are a broken spirit: a broken and a contrite heart, O God, thou wilt not despise.",
+  fr:"Ô Dieu, aie pitié de moi dans ta bonté ; selon ta grande miséricorde, efface mes transgressions. Lave-moi complètement de mon iniquité, et purifie-moi de mon péché. Car je reconnais mes transgressions, et mon péché est constamment devant moi. Ô Dieu, crée en moi un cœur pur, et renouvelle en moi un esprit bien disposé. Ne me rejette pas loin de ta face, et ne me retire pas ton esprit saint. Rends-moi la joie de ton salut, et qu'un esprit de bonne volonté me soutienne. Les sacrifices qui plaisent à Dieu, c'est un esprit brisé : ô Dieu, tu ne dédaignes pas un cœur brisé et contrit."
+};
 const HAIL_MARY = {
   en:"Hail Mary, full of grace, the Lord is with thee.\nBlessed art thou among women, and blessed is the fruit of thy womb, Jesus.\nHoly Mary, Mother of God, pray for us sinners,\nnow and at the hour of our death. Amen.",
   fr:"Je vous salue, Marie, pleine de grâce ; le Seigneur est avec vous.\nVous êtes bénie entre toutes les femmes, et Jésus, le fruit de vos entrailles, est béni.\nSainte Marie, Mère de Dieu, priez pour nous, pauvres pécheurs,\nmaintenant et à l'heure de notre mort. Amen."
@@ -877,6 +978,7 @@ let psalmState={key:null,count:0};
 let rosaryState={saint:null,intention:'',step:0};let lastGuideResult=null;
 let currentPrayer=null;
 let familyState={key:null,step:0,count:0};
+let examState={step:0};
 
 // ═══════════ DAILY PROGRESS + HISTORY ═══════════
 // progressCache: today's live counts (pruned to today).
@@ -991,6 +1093,7 @@ function applyLanguage(){
   if(psalmState.key) renderPsalmStep();
   if(currentPrayer) openPrayer(currentPrayer);
   if(familyState.key) renderFamilyStep();
+  if(document.getElementById('guide-exam-view').classList.contains('active')) renderExamStep();
   if(rosaryState.saint){
     document.getElementById('ri-saint-icon').textContent=rosaryState.saint.icon;
     document.getElementById('ri-saint-name').textContent=rosaryState.saint.name[LANG];
@@ -1031,6 +1134,93 @@ function selectQI(el,val){
   document.getElementById('guide-input').value=el.textContent.trim();
 }
 function showGuideHome(){showSubView('guide','guide-home');}
+
+// ═══════════ EXAMINATION OF CONSCIENCE (offline, private) ═══════════
+// Sequence: intro → opening prayer → 10 commandments → act of contrition →
+// penitential psalm → encouragement toward sacramental confession.
+function buildExamSequence(){
+  const seq=[{type:'intro'},{type:'opening'}];
+  EXAM_COMMANDMENTS.forEach((c,i)=>seq.push({type:'commandment',idx:i}));
+  seq.push({type:'contrition'});
+  seq.push({type:'penance'});
+  seq.push({type:'encouragement'});
+  return seq;
+}
+const EXAM_SEQUENCE=buildExamSequence();
+
+function openExam(){
+  examState={step:0};
+  showSubView('guide','guide-exam-view');
+  renderExamStep();
+}
+function renderExamStep(){
+  const inner=document.getElementById('exam-inner');
+  const step=examState.step;
+  const seq=EXAM_SEQUENCE;
+
+  if(step>=seq.length){
+    inner.innerHTML=`<div class="rc-done"><div class="rc-done-icon">🕊️</div><h3>${t('exam_done')}</h3><p style="margin-top:8px;">${t('exam_clear_note')}</p><button class="rc-restart" onclick="showGuideHome()">${t('back')}</button></div>`;
+    return;
+  }
+
+  const item=seq[step];
+  const progress=Math.round((step/seq.length)*100);
+  let body='';
+
+  if(item.type==='intro'){
+    body=`<div class="exam-block" style="border-color:var(--gold);">
+      <div class="pb-label" style="color:var(--gold);font-family:'Inter',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">${t('exam_intro_label')}</div>
+      <div class="pb-text" style="font-size:16px;line-height:1.85;color:var(--sacred);">${t('exam_intro')}</div>
+      <div class="exam-privacy">🔒 <span>${t('exam_clear_note')}</span></div>
+    </div>
+    <div class="rc-nav"><button class="rc-next" onclick="examNext()">${t('exam_begin')}</button></div>`;
+  }
+  else if(item.type==='opening'){
+    body=`<div class="rc-phase">${t('exam_opening_label')}</div>
+      <div class="exam-block"><div class="exam-prayer-text">${EXAM_OPENING[LANG]}</div></div>
+      <div class="rc-progress"><div class="rc-bar" style="width:${progress}%"></div></div>
+      <div class="rc-nav"><button class="rc-prev" onclick="examPrev()">${t('back_short')}</button><button class="rc-next" onclick="examNext()">${t('continue')}</button></div>`;
+  }
+  else if(item.type==='commandment'){
+    const c=EXAM_COMMANDMENTS[item.idx];
+    const prompts=c.prompts[LANG].map(p=>`<div class="exam-prompt"><span class="ep-dot">✦</span><span>${p}</span></div>`).join('');
+    body=`<div class="exam-cmd-num">${t('exam_commandment')} ${c.n} / 10</div>
+      <div class="exam-cmd-title">${c.title[LANG]}</div>
+      <div class="exam-block">${prompts}
+        <textarea class="exam-note" rows="3" placeholder="${t('exam_your_notes')}"></textarea>
+        <div class="exam-privacy">🔒 <span>${t('exam_clear_note')}</span></div>
+      </div>
+      <div class="rc-progress"><div class="rc-bar" style="width:${progress}%"></div></div>
+      <div class="rc-nav"><button class="rc-prev" onclick="examPrev()">${t('back_short')}</button><button class="rc-next" onclick="examNext()">${t('continue')}</button></div>`;
+  }
+  else if(item.type==='contrition'){
+    body=`<div class="rc-phase">${t('exam_contrition_label')}</div>
+      <div style="text-align:center;font-size:14px;color:var(--text-dim);font-style:italic;margin-bottom:14px;">${t('exam_contrition_intro')}</div>
+      <div class="exam-block"><div class="exam-prayer-text">${ACT_OF_CONTRITION[LANG]}</div></div>
+      <div class="rc-progress"><div class="rc-bar" style="width:${progress}%"></div></div>
+      <div class="rc-nav"><button class="rc-prev" onclick="examPrev()">${t('back_short')}</button><button class="rc-next" onclick="examNext()">${t('continue')}</button></div>`;
+  }
+  else if(item.type==='penance'){
+    body=`<div class="rc-phase">${t('exam_penance_label')}</div>
+      <div style="text-align:center;font-size:14px;color:var(--text-dim);font-style:italic;margin-bottom:14px;">${t('exam_penance_intro')}</div>
+      <div class="exam-block"><div class="exam-prayer-text" style="font-style:normal;">${PSALM_51[LANG]}</div></div>
+      <div class="rc-progress"><div class="rc-bar" style="width:${progress}%"></div></div>
+      <div class="rc-nav"><button class="rc-prev" onclick="examPrev()">${t('back_short')}</button><button class="rc-next" onclick="examNext()">${t('continue')}</button></div>`;
+  }
+  else if(item.type==='encouragement'){
+    body=`<div class="rc-phase">${t('exam_next_step')}</div>
+      <div class="exam-block" style="border-color:var(--gold);">
+        <div class="exam-prayer-text" style="font-style:normal;color:var(--sacred);">${EXAM_ENCOURAGEMENT[LANG]}</div>
+      </div>
+      <div class="rc-progress"><div class="rc-bar" style="width:${progress}%"></div></div>
+      <div class="rc-nav"><button class="rc-prev" onclick="examPrev()">${t('back_short')}</button><button class="rc-next" onclick="examNext()">${t('exam_finish')}</button></div>`;
+  }
+
+  inner.innerHTML=body;
+  window.scrollTo(0,0);
+}
+function examNext(){examState.step++;renderExamStep();}
+function examPrev(){if(examState.step>0){examState.step--;renderExamStep();}}
 
 function seekGuidance(){
   const inputVal=document.getElementById('guide-input').value.trim();
@@ -1568,7 +1758,7 @@ function familyPrev(){
 }
 
 // ═══════════ INIT ═══════════
-const BUILD_VERSION='v1.6';
+const BUILD_VERSION='v1.7';
 const BUILD_DATE='2026-06-24';
 (async function init(){
   const bl=document.getElementById('build-label');
